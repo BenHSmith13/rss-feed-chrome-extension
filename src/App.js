@@ -1,23 +1,54 @@
+/*global chrome*/
+import { useState, useEffect } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import { text, secondary } from './Constants/colors';
+
+import FeedList from 'Components/Views/FeedList';
+import FeedDetails from 'Components/Views/FeedDetails';
 
 function App() {
+  const [feeds, setFeeds] = useState([]);
+  const [activeFeed, setActiveFeed] = useState();
+
+  useEffect(() => {
+    chrome.storage.sync.get('feeds', res => {
+      setFeeds(res.feeds);
+    });
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      for (var key in changes) {
+        if (key === 'feeds') { setFeeds(changes[key].newValue); }
+      }
+    });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header style={{
+        backgroundColor: secondary,
+        color: text,
+      }}>
+        <img
+          src={logo}
+          className="App-logo" alt="logo"
+          width={64}
+          style={{ display: 'inline-block' }}
+        />
+        <h1 style={{ display: 'inline-block', }}>
+          Feed Reeder
+        </h1>
       </header>
+      {activeFeed ? (
+        <FeedDetails
+          feed={activeFeed}
+          back={() => setActiveFeed()}
+        />
+      ) : (
+        <FeedList
+          feeds={feeds}
+          addFeedOpen={true}
+          setActiveFeed={setActiveFeed}
+        />
+      )}
     </div>
   );
 }
