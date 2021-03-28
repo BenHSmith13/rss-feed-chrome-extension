@@ -24,10 +24,12 @@ export default function FeedList({
         newFeedList = [newFeedItem];
       }
       
-      chrome.storage.sync.set(
-        { feeds: newFeedList },
-        () => console.log('Udated feed list', newFeedList),
-      );
+      if (chrome && chrome.storage) {
+        chrome.storage.sync.set(
+          { feeds: newFeedList },
+          () => console.log('Udated feed list', newFeedList),
+        );
+      }
     })
     .catch(err => {
       console.error(err);

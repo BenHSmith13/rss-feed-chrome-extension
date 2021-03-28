@@ -17,10 +17,12 @@ export default function FeedItem({
   } = item;
 
   const openItem = () => {
-    chrome.tabs.create({
-      active: true,
-      url: link,
-    });
+    if (chrome && chrome.tabs) {
+      chrome.tabs.create({
+        active: true,
+        url: link,
+      });
+    }
   }
 
   return (
