@@ -1,16 +1,17 @@
-/*global chrome*/
 import React, { useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
+import { Input, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
-import TextField from 'Components/Base/TextField';
-import Button from 'Components/Base/Button';
+import { setItem } from 'Utils/storage';
+
 import Feed from './Feed';
 
 export default function FeedList({
-  feeds, addFeedOpen, setActiveFeed,
+  feeds, setActiveFeed,
 }) {
-  const [newFeed, setNewFeed] = useState();
+  const [newFeed, setNewFeed] = useState('');
   
   const addNewFeed = () => {
     axios.get(`https://feed-getter.herokuapp.com/?feed=${encodeURIComponent(newFeed)}`)
@@ -23,13 +24,9 @@ export default function FeedList({
       } else {
         newFeedList = [newFeedItem];
       }
-      
-      if (chrome && chrome.storage) {
-        chrome.storage.sync.set(
-          { feeds: newFeedList },
-          () => console.log('Udated feed list', newFeedList),
-        );
-      }
+
+      setItem('feeds', newFeedList, () => console.log('Udated feed list', newFeedList));
+      setNewFeed('');
     })
     .catch(err => {
       console.error(err);
@@ -38,19 +35,24 @@ export default function FeedList({
 
   return (
     <>
-      <TextField
-        value={newFeed}
-        onChange={setNewFeed}
-      />
-      <Button
-        onClick={addNewFeed}
-        style={{ marginRight: '0.5rem' }}
-      >
-        Save
-      </Button>
+      <Input.Group compact>
+        <Input
+          value={newFeed}
+          onChange={e => setNewFeed(e.target.value)}
+          style={{ width: '60%'}}
+          placeholder='New Feed Url'
+        />
+        <Button
+          onClick={addNewFeed}
+          type='primary'
+        >
+          <PlusOutlined />
+          Add Feed
+        </Button>
+      </Input.Group>
       {_.map(feeds, feed => (
         <Feed
-          key={`feed_${feed.guid}`}
+          key={`feed_${feed.guid || feed.link}`}
           onClick={() => setActiveFeed(feed)}
           feed={feed}
         />

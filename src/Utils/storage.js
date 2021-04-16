@@ -1,5 +1,5 @@
 /*global chrome*/
-export function setItem(key, value, cb = () => ({})) {
+export function setItem(key, value, cb = () => null) {
   if (chrome && chrome.storage) { // chrome
     chrome.storage.sync.set({ [key]: value }, cb);
   } else {
@@ -8,6 +8,7 @@ export function setItem(key, value, cb = () => ({})) {
     } else {
       localStorage.removeItem(key);
     }
+    window.dispatchEvent(new Event('storage')); // needed for the storage listener on the same page to pick this up
     cb();
   }
 }
@@ -23,16 +24,17 @@ export function getItem(key, cb = () => ({})) {
   }
 }
 
-export function removeItem(key, cb = () => ({})) {
+export function removeItem(key, cb = () => null) {
   if (chrome && chrome.storage) { // chrome
     chrome.storage.sync.set({ [key]: null }, cb);
   } else {
     localStorage.removeItem(key);
+    window.dispatchEvent(new Event('storage'));
     cb();
   }
 }
 
-export function storageListener(key, cb = () => ({})) {
+export function createStorageListener(key, cb = () => null) {
   if (chrome && chrome.storage) {
     chrome.storage.onChanged.addListener(changes => {
       for (const changeKey in changes) {

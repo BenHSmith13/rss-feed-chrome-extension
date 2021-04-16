@@ -1,22 +1,30 @@
 import React from 'react';
 import _ from 'lodash';
+import { Card } from 'antd';
 
 export default function Feed({
-  feed,
+  feed
 }) {
-  const { image = {}, title} = feed || {}; 
+  const { image = {}, title} = feed || {};
+  const imageUrl = _.get(image, 'url');
 
   return (
-    <div>
-      {_.get(feed, 'image.url') ? (
-        <img
-          src={feed.image.url}
-          alt="feed logo"
-          width={64}
-          style={{ display: 'inline-block' }}
-        />
-      ) : null}
-      {feed.title}
-    </div>
+    <Card
+     title={
+      <>
+        {title}
+        {imageUrl ? (
+          <img
+            src={feed.image.url}
+            alt="feed logo"
+            width={64}
+            style={{ float: 'right' }}
+          />
+        ) : null}
+      </>
+     }
+     style={{ marginTop: '0.5rem' }}
+    >
+    </Card>
   )
 }
