@@ -6,7 +6,7 @@ import { createStorageListener, getItem } from 'Utils/storage';
 import FeedList from 'Components/Views/FeedList';
 // import FeedDetails from 'Components/Views/FeedDetails';
 import Filters from 'Components/Views/Filters';
-const { Header, Footer, Content } = Layout;
+const { Header, Content } = Layout;
 
 function App() {
   const [feeds, setFeeds] = useState([]);
@@ -32,7 +32,7 @@ function App() {
   }
 
   return (
-    <Layout className="App">
+    <Layout className="app">
       <Header className='site-header'>
         <h1>Feed Reader</h1>
         <Menu
@@ -57,9 +57,6 @@ function App() {
       <Content className='content'>
         {body}
       </Content>
-      <Footer>
-        {/* I like Feet */}
-      </Footer>
     </Layout>
   );
 }

@@ -3,12 +3,27 @@ const intervalSeconds = 60 * 5;
 const intervalTime = 1000 * intervalSeconds;
 
 // move to some kind of storage
-const notificationsSent = {}
+// const notificationsSent = {}
 
-const excludeWords = ['wordpress', 'backend', 'native', 'database', 'angular', 'php', 'laravel', 'drupal', 'marketing', 'ruby', 'rails', 'android', 'c++', 'c#', 'python', 'ionic', 'blockchain', 'salesforce', 'elixir', 'magento', 'shopify'];
+// let excluderules = ['wordpress', 'backend', 'native', 'database', 'angular', 'php', 'laravel', 'drupal', 'marketing', 'ruby', 'rails', 'android', 'c++', 'c#', 'python', 'ionic', 'blockchain', 'salesforce', 'elixir', 'magento', 'shopify'];
+let filters;
 const daysAgoToInclude = 1000 * 60 * 60 * 24 * 2; // ms * sec * min * hrs * days;
 
+chrome.storage.sync.get('filters', res => {
+  filters = res.filters || {};
+});
+chrome.storage.onChanged.addListener(changes => {
+  for (const key in changes) {
+    if (key === 'filters') {
+      filters = changes[key].newValue;
+      console.log('updated filters', filters);
+    }
+  }
+});
+
 const shouldNotify= feedItem => {
+  if (!filters) { return false; } // filters have not loaded
+
   const {
     // content, // "-	Knowledge of front-end development: HTML5, CSS, JavaScript, TypeScript, React, Angular, jQuery<br />↵-	Knowledge of server-side languages; Java, Python, Flask, Ruby, .NET, etc.<br />↵-	Ability to program to RESTful API&rsquo;s<br />↵-	Knowledge of database technology; MySQL, SQL Server<br />↵-	Ability to do basic UI/UX design and development and prototyping<br />↵-	Understanding of Docker and or Azure technologies.&nbsp;&nbsp;Nginx a plus<br />↵-	Experience with Windows and Linux<br /><br /><br /><b>Hourly Range</b>: $60.00-$75.00↵↵<br /><b>Posted On</b>: March 15, 2021 14:00 UTC<br /><b>Category</b>: Full Stack Development<br /><b>Skills</b>:Python,     JavaScript,     HTML,     AngularJS,     MySQL,     Java,     CSS,     Angular,     Windows,     Linux    ↵<br /><b>Location Requirement</b>: Only freelancers located in the United States may apply.↵<br /><b>Country</b>: United States↵<br /><a href="https://www.upwork.com/jobs/Full-Stack-Developer_%7E01875bbd5de8ca2647?source=rss">click to apply</a>↵"
     // contentSnippet, // "-	Knowledge of front-end development: HTML5, CSS, JavaScript, TypeScript, React, Angular, jQuery↵↵Hourly Range: $60.00-$75.00↵↵Posted On: March 15, 2021 14:00 UTC↵Category: Full Stack Development↵Skills:Python,     JavaScript,     HTML,     AngularJS,     MySQL,     Java,     CSS,     Angular,     Windows,     Linux    ↵Location Requirement: Only freelancers located in the United States may apply.↵Country: United States↵click to apply"
@@ -18,8 +33,8 @@ const shouldNotify= feedItem => {
     // pubDate, // "Mon, 15 Mar 2021 14:00:03 +0000"
     title, // "Full Stack Developer - Upwork"
   } = feedItem || {};
-  if (notificationsSent[guid]) { return false; }
-  notificationsSent[guid] = true;
+  // if (notificationsSent[guid]) { return false; }
+  // notificationsSent[guid] = true;
 
   const itemTimeStamp = new Date(isoDate).getTime();
   const now  = Date.now();
@@ -28,10 +43,21 @@ const shouldNotify= feedItem => {
     return false;
   }
 
-  for (const word of excludeWords) {
-    if (title.toLowerCase().includes(word)) {
-      console.log('excluding ', title);
-      return false;
+  if (filters.include && filters.include.active && filters.include.rules) {
+    for (const word of filters.include.rules) {
+      if (title.toLowerCase().includes(word.toLowerCase())) {
+        console.log('including ', title);
+        return true;
+      }
+    }
+  }
+
+  if (filters.exclude && filters.exclude.active&& filters.exclude.rules) {
+    for (const word of filters.exclude.rules) {
+      if (title.toLowerCase().includes(word.toLowerCase())) {
+        console.log('excluding ', title);
+        return false;
+      }
     }
   }
 

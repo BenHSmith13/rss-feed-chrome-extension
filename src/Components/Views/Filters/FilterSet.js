@@ -38,7 +38,7 @@ export default function FilterSet({
           <Input
             value={newRule}
             onChange={e => setNewRule(e.target.value)}
-            style={{ width: '30%'}}
+            style={{ width: '60%'}}
             placeholder='New Feed Url'
           />
           <Button
