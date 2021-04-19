@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Row } from 'antd';
+import { Layout, Row } from 'antd';
 
 import FilterSet from './FilterSet';
 import { setItem } from 'Utils/storage';
@@ -38,7 +38,7 @@ export default function Filters({
   }
 
   return (
-    <>
+    <Layout.Content className='content'>
       <Row gutter={16}>
         <FilterSet
           name='Include'
@@ -57,6 +57,6 @@ export default function Filters({
           removeRule={rule => removeRule('exclude', rule)}
         />
       </Row>
-    </>
+    </Layout.Content>
   )
 }

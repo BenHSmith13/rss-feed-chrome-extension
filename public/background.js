@@ -3,7 +3,7 @@ const intervalSeconds = 60 * 5;
 const intervalTime = 1000 * intervalSeconds;
 
 // move to some kind of storage
-// const notificationsSent = {}
+const notificationsSent = {}
 
 // let excluderules = ['wordpress', 'backend', 'native', 'database', 'angular', 'php', 'laravel', 'drupal', 'marketing', 'ruby', 'rails', 'android', 'c++', 'c#', 'python', 'ionic', 'blockchain', 'salesforce', 'elixir', 'magento', 'shopify'];
 let filters;
@@ -33,8 +33,8 @@ const shouldNotify= feedItem => {
     // pubDate, // "Mon, 15 Mar 2021 14:00:03 +0000"
     title, // "Full Stack Developer - Upwork"
   } = feedItem || {};
-  // if (notificationsSent[guid]) { return false; }
-  // notificationsSent[guid] = true;
+  if (notificationsSent[guid]) { return false; }
+  notificationsSent[guid] = true;
 
   const itemTimeStamp = new Date(isoDate).getTime();
   const now  = Date.now();

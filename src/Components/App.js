@@ -6,12 +6,14 @@ import { createStorageListener, getItem } from 'Utils/storage';
 import FeedList from 'Components/Views/FeedList';
 // import FeedDetails from 'Components/Views/FeedDetails';
 import Filters from 'Components/Views/Filters';
-const { Header, Content } = Layout;
+import FeedDetails from 'Components/Views/FeedDetails';
+const { Header } = Layout;
 
 function App() {
   const [feeds, setFeeds] = useState([]);
   const [filters, setFilters] = useState({});
   const [tab, setTab] = useState('feedList');
+  const [activeFeed, setActiveFeed] = useState();
 
   useEffect(() => {
     getItem('feeds', setFeeds);
@@ -21,9 +23,15 @@ function App() {
   }, []);
 
   let body;
-  if (tab === 'feedList') {
+  if (activeFeed) {
+    body = <FeedDetails
+      feed={activeFeed}
+      back={() => setActiveFeed()}
+    />
+  } else if (tab === 'feedList') {
     body = <FeedList
       feeds={feeds}
+      setActiveFeed={setActiveFeed}
     />
   } else if (tab === 'filters') {
     body = <Filters
@@ -54,9 +62,7 @@ function App() {
           </Menu.Item>
         </Menu>
       </Header>
-      <Content className='content'>
-        {body}
-      </Content>
+      {body}
     </Layout>
   );
 }

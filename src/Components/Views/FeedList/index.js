@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import { Input, Button } from 'antd';
+import { Layout, Input, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { setItem } from 'Utils/storage';
@@ -34,7 +34,7 @@ export default function FeedList({
   }
 
   return (
-    <>
+    <Layout.Content className='content'>
       <Input.Group compact>
         <Input
           value={newFeed}
@@ -57,6 +57,6 @@ export default function FeedList({
           feed={feed}
         />
       ))}
-    </>
+    </Layout.Content>
   )
 }

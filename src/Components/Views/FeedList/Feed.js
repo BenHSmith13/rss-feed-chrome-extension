@@ -1,11 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
+import { MoreOutlined } from '@ant-design/icons';
 
 export default function Feed({
-  feed
+  feed, onClick,
 }) {
-  const { image = {}, title} = feed || {};
+  const { image = {}, title, description, } = feed || {};
   const imageUrl = _.get(image, 'url');
 
   return (
@@ -25,6 +26,14 @@ export default function Feed({
      }
      style={{ marginTop: '0.5rem' }}
     >
+      {description}
+      <Button
+        onClick={onClick}
+        type='text'
+        style={{ float: 'right' }}
+      >
+        <MoreOutlined />
+      </Button>
     </Card>
   )
 }
