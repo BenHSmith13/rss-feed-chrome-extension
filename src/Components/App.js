@@ -25,6 +25,7 @@ function App() {
   let body;
   if (activeFeed) {
     body = <FeedDetails
+      feeds={feeds}
       feed={activeFeed}
       back={() => setActiveFeed()}
     />
