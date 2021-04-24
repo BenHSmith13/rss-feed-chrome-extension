@@ -4,7 +4,6 @@ import { Layout, Menu } from 'antd';
 import { createStorageListener, getItem } from 'Utils/storage';
 
 import FeedList from 'Components/Views/FeedList';
-// import FeedDetails from 'Components/Views/FeedDetails';
 import Filters from 'Components/Views/Filters';
 import FeedDetails from 'Components/Views/FeedDetails';
 const { Header } = Layout;
