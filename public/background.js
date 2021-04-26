@@ -57,7 +57,7 @@ const shouldNotify= feedItem => {
 
 setInterval(() => {
   chrome.storage.sync.get('feeds', res => {
-    if (res.feeds.length) {
+    if (res.feeds && res.feeds.length) {
       res.feeds.forEach(feed => {
         const x = new XMLHttpRequest();
         x.open('GET', `https://feed-getter.herokuapp.com/?feed=${encodeURIComponent(feed.url)}`);
