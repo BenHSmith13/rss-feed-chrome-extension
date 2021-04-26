@@ -68,14 +68,13 @@ setInterval(() => {
               response.items.forEach(item => {
                 const {
                   content,
-                  contentSnippet,
-                  description,
-                  guid,
-                  isoDate,
+                  // contentSnippet,
+                  // description,
+                  // guid,
+                  // isoDate,
                   link,
                   title,
                 } = item;
-                console.log(item);
                 if (shouldNotify(item)) {
                   chrome.notifications.create(link, {
                     type: 'basic',
